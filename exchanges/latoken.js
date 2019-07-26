@@ -1,7 +1,8 @@
 const cloudscraper = require('cloudscraper');
 const credentials = require('./../credentials/latoken.json');
 
-const round = (num,decimals=8) => {
+const round = (numRaw,decimals=8) => {
+	let num = numRaw;
   if (typeof num !== 'number') num = parseFloat(num);
   const multiplier = 10 ** decimals;
   const roundedNumber = Math.round(num * multiplier) / multiplier;
@@ -9,18 +10,18 @@ const round = (num,decimals=8) => {
 };
 
 const headerObj = {
-  "Host": `latoken.com`,
+  Host: `latoken.com`,
   "User-Agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0`,
-  "Accept": `application/json, text/plain, */*`,
+  Accept: `application/json, text/plain, */*`,
   "Accept-Language": `en-GB,en-US;q=0.7,en;q=0.3`,
-  "Referer": `https://latoken.com/exchange/ETH-JSE`,
+  Referer: `https://latoken.com/exchange/ETH-JSE`,
   "Content-Type": `application/json;charset=utf-8`,
-  "Cookie": credentials.cookie,
-  "Connection": `keep-alive`,
-  "TE": `Trailers`,
-  "Pragma": `no-cache`,
+  Cookie: credentials.cookie,
+  Connection: `keep-alive`,
+  TE: `Trailers`,
+  Pragma: `no-cache`,
   "Cache-Control": `max-age=0, no-cache`,
-}
+};
 
 const latoken = {
 
@@ -51,7 +52,7 @@ const latoken = {
       body: {
         amount: volume,
         pairId: 564,
-        price: myPrice,  
+        price: myPrice,
         side: 'buy',
       },
       method: 'POST',

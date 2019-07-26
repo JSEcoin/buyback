@@ -9,7 +9,8 @@ const fs = require('fs');
 const latoken = require('./exchanges/latoken.js');
 const ecxx = require('./exchanges/ecxx.js');
 
-const round = (num,decimals=8) => {
+const round = (numRaw,decimals=8) => {
+	let num = numRaw;
 	if (typeof num !== 'number') num = parseFloat(num);
 	const multiplier = 10 ** decimals;
 	const roundedNumber = Math.round(num * multiplier) / multiplier;
@@ -20,7 +21,7 @@ const log = (logString) => {
 	const yymmdd = new Date().toISOString().slice(2,10).replace(/-/g,"");
 	console.log(logString);
 	fs.appendFile(`logs/${yymmdd}.txt`, logString+"\n", function (err) {});
-}
+};
 
 const buyBack = async () => {
 	const latokenData = await latoken.getData();
@@ -36,15 +37,14 @@ const buyBack = async () => {
 	log('LATOKEN: '+JSON.stringify(latokenOrder));
 
 	if (ecxxData.ethPrice <= latokenData.midPrice * 1.05) {
-		let usdPrice = ecxxData.midPrice;
-		volume = volume * 0.5;
+		const usdPrice = ecxxData.midPrice;
+		volume *= 0.5;
 		const ecxxOrder = await ecxx.placeOrder(usdPrice,volume);
 		log('ECXX: '+JSON.stringify(ecxxOrder));
 	} else {
 		log('ECXX: PriceInf '+ecxxData.ethPrice);
 	}
-
-}
+};
 
 const loop = () => {
 	buyBack();

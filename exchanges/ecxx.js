@@ -2,7 +2,8 @@ const cloudscraper = require('cloudscraper');
 const md5 = require('blueimp-md5');
 const credentials = require('./../credentials/ecxx.json');
 
-const round = (num,decimals=8) => {
+const round = (numRaw,decimals=8) => {
+	let num = numRaw;
   if (typeof num !== 'number') num = parseFloat(num);
   const multiplier = 10 ** decimals;
   const roundedNumber = Math.round(num * multiplier) / multiplier;
@@ -29,9 +30,8 @@ const ecxx = {
     returnObj.midPrice = round((returnObj.topBid + returnObj.topAsk) / 2,7);
     returnObj.lastPrice = jseData.marketDetail[marketPair][0].payload.priceLast;
     returnObj.prevDayPrice = jseData.marketDetail[marketPair][0].payload.yesterdayPriceLast;
-    returnObj.ethUSD = jseData.marketDetail['ETH_USDT'][0].payload.bids.price[0];
+    returnObj.ethUSD = jseData.marketDetail.ETH_USDT[0].payload.bids.price[0];
     returnObj.ethPrice = returnObj.midPrice / returnObj.ethUSD;
-    
     return returnObj;
   },
 
@@ -39,14 +39,14 @@ const ecxx = {
     const options = {
       json: true,
       form: {
-        entrustPrice: String(myPrice),  
+        entrustPrice: String(myPrice),
         type: 1,//'buy',
         coinCode: marketPair,
         entrustCount: String(volume),
       },
       method: 'POST',
       uri: 'https://www.ecxx.com/exapi/api/trade/order',
-    };  
+    };
 
     const stringToSign = String(options.form.entrustPrice + options.form.type + options.form.coinCode + options.form.entrustCount);
     options.form.sign1 = md5(stringToSign,credentials.apiKey);

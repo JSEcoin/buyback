@@ -2,6 +2,8 @@
 
 ## JSE Token Buy Back Trading Bot
 
+Node.js crypto exchange trading bot. Uses cloudscraper to complete cloudflare authentication where no API is available.
+
 - Current Exchanges:
 - LATOKEN exchanges/latoken.js
 - ECXX exchanges/ecxx.js
@@ -26,9 +28,13 @@ Package can be installed with:-
 ```
 git clone https://github.com/jsecoin/buyback.git;
 cd buyback;
+mkdir logs;
+mkdir credentials;
 npm install;
 node buyback.js;
 ```
+
+Credentials are stored in credentials/latoken.json and credentials/ecxx.json respectively. LATOKEN contains the browser cookie data post-login and ECXX contains an apiKey available from their support team.
 
 Note. Use forever or equivalent to run as a background process
 
