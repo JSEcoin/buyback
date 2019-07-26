@@ -1,2 +1,6 @@
 # buyback
- Trading bot for token buy back
+  JSE Token Buy Back Trading Bot
+
+  Current Exchanges:
+  LATOKEN exchanges/latoken.js
+  ECXX exchanges/ecxx.js
