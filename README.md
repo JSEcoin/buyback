@@ -36,9 +36,33 @@ node buyback.js;
 
 Credentials are stored in credentials/latoken.json and credentials/ecxx.json respectively. LATOKEN contains the browser cookie data post-login and ECXX contains an apiKey available from their support team.
 
+
+ecxx.json is just
+```
+{
+  "apiKey": ""
+}
+```
+
+and latoken.json is
+```
+{
+  "cookie": ""
+}
+```
+To get the cookie string use a web browser to log in to your latoken account. Then open a browser console (firefox is ctrl+shift+k, for chrome it's ctrl+shift+j)
+
+Then go to network, look for an ajax request to one of the api endpoints. Just copy the entire Cookie string from the request header. It'll start something like:
+_cfduid=dd35ffffff13d7fffffff8; uaid=18c02c2782665fffff980dc9c; ajs_user_id=12345; ....
+
+You might be able to get it just by running document.cookie; in the console as well.
+
+
+
 Note. Use forever or equivalent to run as a background process
-
-
+```
+forever start buyback.js
+```
 *For more information on the JSEcoin project visit [JSEcoin](https://jsecoin.com/).*
 
 *Developer portal: [https://developer.jsecoin.com](https://developer.jsecoin.com)*
