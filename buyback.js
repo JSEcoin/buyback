@@ -24,25 +24,29 @@ const log = (logString) => {
 };
 
 const buyBack = async () => {
-	const latokenData = await latoken.getData();
+	//const latokenData = await latoken.getData();
 	const ecxxData = await ecxx.getData();
 
+	/*
 	let myPrice = latokenData.midPrice;
 	if (latokenData.midPrice >= latokenData.topAsk) myPrice = latokenData.topBid;
 	if (latokenData.lastPrice < latokenData.topAsk) myPrice = latokenData.topAsk;
 	let volume = round(latokenData.minOrder + (Math.random() * latokenData.minOrder),0);
 	if (latokenData.lastPrice < latokenData.prevDayPrice) volume *= 3;
-
+	*/
+	const myPrice = await latoken.getLastPrice();
+	let volume = Math.round(Math.random() * 1000 + 500);
+	console.log(`LATOKEN-ORDER ${volume} JSE @ ${myPrice}ETH`);
 	const latokenOrder = await latoken.placeOrder(myPrice,volume);
-	log('LATOKEN: '+JSON.stringify(latokenOrder));
-
-	if (ecxxData.ethPrice <= latokenData.midPrice * 1.05) {
+	log('LATOKEN-TICKET: '+JSON.stringify(latokenOrder));
+	if (ecxxData.ethPrice <= parseFloat(myPrice)) {
 		const usdPrice = ecxxData.midPrice;
 		volume *= 0.5;
+		console.log(`ECXX-ORDER ${volume} JSE @ ${ecxxData.ethPrice}ETH`);
 		const ecxxOrder = await ecxx.placeOrder(usdPrice,volume);
-		log('ECXX: '+JSON.stringify(ecxxOrder));
+		log('ECXX-TICKET: '+JSON.stringify(ecxxOrder));
 	} else {
-		log('ECXX: PriceInf '+ecxxData.ethPrice);
+		log('ECXX-TICKET: PriceInf '+ecxxData.ethPrice);
 	}
 };
 

@@ -9,12 +9,13 @@ const round = (numRaw,decimals=8) => {
   return Number(roundedNumber);
 };
 
+
 const headerObj = {
   Host: `latoken.com`,
   "User-Agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0`,
   Accept: `application/json, text/plain, */*`,
-  "Accept-Language": `en-GB,en-US;q=0.7,en;q=0.3`,
-  Referer: `https://latoken.com/exchange/ETH-JSE`,
+  "Accept-Language": `en-US,en;q=0.9`,
+  Referer: `https://exchange.latoken.com/exchange/JSE-ETH`,
   "Content-Type": `application/json;charset=utf-8`,
   Cookie: credentials.cookie,
   Connection: `keep-alive`,
@@ -22,6 +23,22 @@ const headerObj = {
   Pragma: `no-cache`,
   "Cache-Control": `max-age=0, no-cache`,
 };
+
+const headerObj2 = {
+  authority: 'api.latoken.com',
+  method: 'POST',
+  path: '/v2/auth/order/place',
+  scheme: 'https',
+  accept: 'application/json, text/plain, */*',
+  "accept-language": `en-US,en;q=0.9`,
+  "content-type": `application/json;charset=utf-8`,
+  cookie: credentials.cookie,
+  origin: 'https://exchange.latoken.com',
+  referer: `https://exchange.latoken.com/exchange/JSE-ETH`,
+  "sec-fetch-mode": 'cors',
+  "sec-fetch-site": 'same-site',
+  "user-agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0`,
+}
 
 const latoken = {
 
@@ -45,24 +62,42 @@ const latoken = {
     return returnObj;
   },
 
-  placeOrder: async (myPrice,volume) => {
+  getLastPrice: async () => {
+    const unixTimestamp = Math.round((new Date()).getTime() / 1000);
+    const yesterday = unixTimestamp - 86400;
     const options = {
       headers: headerObj,
       json: true,
+      method: 'GET',
+      uri: `https://api.latoken.com/v2/tradingview/history?symbol=JSE%2FETH&resolution=5&from=${yesterday}&to=${unixTimestamp}`,
+    };
+    const jseData = await cloudscraper(options);
+    const lastPrice = jseData.c[jseData.c.length -1];
+    return lastPrice;
+  },
+
+  placeOrder: async (myPrice,volume) => {
+    const options = {
+      headers: headerObj2,
+      json: true,
       body: {
-        amount: volume,
-        pairId: 564,
-        price: myPrice,
-        side: 'buy',
+        baseCurrency: "JSE",
+        condition: "GTC",
+        price: String(myPrice),
+        quantity: String(volume),
+        quoteCurrency: "ETH",
+        side: "BUY",
+        type: "LIMIT",
       },
       method: 'POST',
-      uri: 'https://latoken.com/api/v2/order',
+      uri: 'https://api.latoken.com/v2/auth/order/place',
     };
+
     const orderTicket = await cloudscraper(options);
     const returnObj = { price: myPrice, volume };
-    if (orderTicket.orderId) {
+    if (orderTicket.id) {
       returnObj.success = true;
-      returnObj.ref = orderTicket.orderId;
+      returnObj.ref = orderTicket.id;
     } else {
       returnObj.success = false;
       returnObj.error = JSON.stringify(orderTicket);
