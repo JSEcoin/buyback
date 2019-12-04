@@ -25,7 +25,7 @@ const log = (logString) => {
 
 const buyBack = async () => {
 	//const latokenData = await latoken.getData();
-	const ecxxData = await ecxx.getData();
+	//
 
 	/*
 	let myPrice = latokenData.midPrice;
@@ -34,11 +34,13 @@ const buyBack = async () => {
 	let volume = round(latokenData.minOrder + (Math.random() * latokenData.minOrder),0);
 	if (latokenData.lastPrice < latokenData.prevDayPrice) volume *= 3;
 	*/
-	const myPrice = await latoken.getLastPrice();
+	let myPrice = await latoken.getLastPrice();
+	if (Math.random() > 0.5) myPrice += 0.0000001;
 	let volume = Math.round(Math.random() * 1000 + 500);
 	console.log(`LATOKEN-ORDER ${volume} JSE @ ${myPrice}ETH`);
 	const latokenOrder = await latoken.placeOrder(myPrice,volume);
 	log('LATOKEN-TICKET: '+JSON.stringify(latokenOrder));
+	const ecxxData = await ecxx.getData();
 	if (ecxxData.ethPrice <= parseFloat(myPrice)) {
 		const usdPrice = ecxxData.midPrice;
 		volume *= 0.5;
@@ -55,5 +57,9 @@ const loop = () => {
 	const nextInterval = Math.round(Math.random() * 3600000);
 	setTimeout(() => { loop(); }, nextInterval);
 };
+
+process.on('unhandledRejection', (reason, p) => {
+	console.log(reason.stack);
+});
 
 loop();

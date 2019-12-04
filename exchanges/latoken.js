@@ -11,10 +11,11 @@ const round = (numRaw,decimals=8) => {
 
 
 const headerObj = {
-  Host: `latoken.com`,
+  Host: `api.latoken.com`,
   "User-Agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0`,
   Accept: `application/json, text/plain, */*`,
   "Accept-Language": `en-US,en;q=0.9`,
+  Origin: 'https://exchange.latoken.com',
   Referer: `https://exchange.latoken.com/exchange/JSE-ETH`,
   "Content-Type": `application/json;charset=utf-8`,
   Cookie: credentials.cookie,
@@ -63,6 +64,7 @@ const latoken = {
   },
 
   getLastPrice: async () => {
+    /*
     const unixTimestamp = Math.round((new Date()).getTime() / 1000);
     const yesterday = unixTimestamp - 86400;
     const options = {
@@ -73,6 +75,16 @@ const latoken = {
     };
     const jseData = await cloudscraper(options);
     const lastPrice = jseData.c[jseData.c.length -1];
+    return lastPrice;
+    */
+    const options = {
+      headers: headerObj,
+      json: true,
+      method: 'GET',
+      uri: `https://api.latoken.com/v2/ticker`,
+    };
+    const jseData = await cloudscraper(options);
+    const lastPrice = jseData[715].lastPrice;
     return lastPrice;
   },
 
