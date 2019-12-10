@@ -35,6 +35,7 @@ const buyBack = async () => {
 	if (latokenData.lastPrice < latokenData.prevDayPrice) volume *= 3;
 	*/
 	let myPrice = await latoken.getLastPrice();
+	if (!myPrice) return false;
 	if (Math.random() > 0.5) {
 		myPrice = parseFloat(myPrice) + 0.0000001;
 		myPrice = String(myPrice).substr(0,9);
