@@ -35,7 +35,10 @@ const buyBack = async () => {
 	if (latokenData.lastPrice < latokenData.prevDayPrice) volume *= 3;
 	*/
 	let myPrice = await latoken.getLastPrice();
-	if (Math.random() > 0.5) myPrice += 0.0000001;
+	if (Math.random() > 0.5) {
+		myPrice = parseFloat(myPrice) + 0.0000001;
+		myPrice = String(myPrice).substr(0,9);
+	}
 	let volume = Math.round(Math.random() * 1000 + 500);
 	console.log(`LATOKEN-ORDER ${volume} JSE @ ${myPrice}ETH`);
 	const latokenOrder = await latoken.placeOrder(myPrice,volume);
