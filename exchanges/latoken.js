@@ -84,11 +84,12 @@ const latoken = {
       uri: `https://api.latoken.com/v2/ticker`,
     };
     const jseData = await cloudscraper(options);
-    const lastPrice = jseData[713].lastPrice; // this can change
-    if (jseData[713].symbol !== 'JSE/ETH') {
-      console.log('has the asset reference changed?? error 88 latoken.js');
-      return false;
-    }
+    let tickerID = 0;
+    Object.keys(jseData).forEach((key) => {
+      if (jseData[key].symbol === 'JSE/ETH') tickerID = key;
+    });
+    if (!tickerID) return false;
+    const lastPrice = jseData[tickerID].lastPrice;
     return lastPrice;
   },
 
