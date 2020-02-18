@@ -40,10 +40,11 @@ const buyBack = async () => {
 		myPrice = parseFloat(myPrice) + 0.0000001;
 		myPrice = String(myPrice).substr(0,9);
 	}
-	let volume = Math.round(Math.random() * 1000 + 500);
+	const volume = Math.round(Math.random() * 1000 + 500);
 	console.log(`LATOKEN-ORDER ${volume} JSE @ ${myPrice}ETH`);
 	const latokenOrder = await latoken.placeOrder(myPrice,volume);
 	log('LATOKEN-TICKET: '+JSON.stringify(latokenOrder));
+	/*
 	const ecxxData = await ecxx.getData();
 	if (ecxxData.ethPrice <= parseFloat(myPrice)) {
 		const usdPrice = ecxxData.midPrice;
@@ -54,6 +55,7 @@ const buyBack = async () => {
 	} else {
 		log('ECXX-TICKET: PriceInf '+ecxxData.ethPrice);
 	}
+	*/
 };
 
 const loop = () => {
