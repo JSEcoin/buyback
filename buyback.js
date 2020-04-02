@@ -40,7 +40,7 @@ const buyBack = async () => {
 		myPrice = parseFloat(myPrice) + 0.0000001;
 		myPrice = String(myPrice).substr(0,9);
 	}
-	const volume = Math.round(Math.random() * 1000 + 500);
+	const volume = Math.round(Math.random() * 10000 + 5000);
 	console.log(`LATOKEN-ORDER ${volume} JSE @ ${myPrice}ETH`);
 	const latokenOrder = await latoken.placeOrder(myPrice,volume);
 	log('LATOKEN-TICKET: '+JSON.stringify(latokenOrder));
@@ -60,7 +60,7 @@ const buyBack = async () => {
 
 const loop = () => {
 	buyBack();
-	const nextInterval = Math.round(Math.random() * 3600000);
+	const nextInterval = Math.round(Math.random() * 36000000);
 	setTimeout(() => { loop(); }, nextInterval);
 };
 
